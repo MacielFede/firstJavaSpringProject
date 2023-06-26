@@ -1,18 +1,22 @@
 package com.learning.demo.controllers;
 
+import com.learning.demo.dao.UsuarioDao;
 import com.learning.demo.models.Usuario;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class UsuarioController {
-
-    @RequestMapping(value = "usuario/{id}")
+    @Autowired
+    private UsuarioDao usuarioDao;
+    @RequestMapping(value = "api/usuarios/{id}")
     public Usuario getUsuario(@PathVariable int id){
+        //TODO: hacer una query y retornar la info del user
         Usuario user = new Usuario();
         user.setApellido("Maciel");
         user.setEmail("maciel@gmail.es");
@@ -22,35 +26,20 @@ public class UsuarioController {
         return user;
     }
 
-    @RequestMapping(value = "usuarios")
-    public List<Usuario> getUsuarios(){
+    @RequestMapping(value = "api/usuarios")
+    public List<Usuario> getUsuarios(){return usuarioDao.getUsuario();}
 
-        List<Usuario> usuarios = new ArrayList<>();
-        Usuario user1 = new Usuario();
-        user1.setApellido("Maciel");
-        user1.setEmail("maciel@gmail.es");
-        user1.setNombre("Federico");
-        user1.setTelefono("761723584");
-        user1.setId(1);
+    @RequestMapping(value="api/usuarios/{id}", method = RequestMethod.DELETE)
+    public void deleteUsuario(@PathVariable int id){
+        usuarioDao.deleteUsuario(id);
+    }
 
-        Usuario user2 = new Usuario();
-        user2.setApellido("Hernandez");
-        user2.setEmail("hf32@gmail.es");
-        user2.setNombre("Fernando");
-        user2.setTelefono("712344");
-        user2.setId(2);
+    @RequestMapping(value = "api/usuarios", method = RequestMethod.POST)
+    public void registrarUsuario(@RequestBody Usuario usuario){
+        Argon2 argon = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+        String hashedPass = argon.hash(1, 1024, 1, usuario.getPassword());
 
-        Usuario user3 = new Usuario();
-        user3.setApellido("Aleman");
-        user3.setEmail("ga@gmail.es");
-        user3.setNombre("Gaston");
-        user3.setTelefono("87162412");
-        user3.setId(3);
-
-        usuarios.add(user1);
-        usuarios.add(user2);
-        usuarios.add(user3);
-
-        return usuarios;
+        usuario.setPassword(hashedPass);
+        usuarioDao.registrarUsuario(usuario);
     }
 }

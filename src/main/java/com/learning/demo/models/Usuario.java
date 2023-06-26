@@ -1,63 +1,31 @@
 package com.learning.demo.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "usuarios")
 public class Usuario {
 
     public Usuario(){
     }
 
-    private String nombre;
+    @Getter @Setter @Column(name = "id") @Id
     private int id;
+    @Getter @Setter @Column(name = "Nombre")
+    private String nombre;
+    @Getter @Setter @Column(name = "Apellido")
     private String apellido;
+    @Getter @Setter @Column(name = "telefono")
     private String telefono;
+    @Getter @Setter @Column(name = "Email")
     private String email;
+    @Getter @Setter @Column(name = "contrasena")
     private String password;
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
 
 }
